@@ -1,0 +1,24 @@
+name: CD - Development
+
+on:
+  push:
+    branches:
+      - develop
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment: development
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Trigger Render Deploy Hook
+        # Sends a POST request to Render to trigger deployment
+        run: |
+          curl -X POST ${{ secrets.RENDER_DEPLOY_HOOK_DEV_URL }}
+
+      - name: Deployment Confirmation
+        run: |
+          echo "Deployment to development triggered at $(date)"
