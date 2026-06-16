@@ -1,0 +1,25 @@
+{
+  "name": "pakvista-cicd",
+  "version": "1.0.0",
+  "description": "PakVista Multi-Environment CI/CD pipeline and static web application",
+  "scripts": {
+    "lint:html": "htmlhint *.html",
+    "lint:css": "stylelint *.css",
+    "build": "parcel build index.html --dist-dir dist --public-url ./"
+  },
+  "keywords": [
+    "devops",
+    "ci-cd",
+    "nginx",
+    "docker",
+    "render"
+  ],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "htmlhint": "^1.1.4",
+    "parcel": "^2.12.0",
+    "stylelint": "^16.2.1",
+    "stylelint-config-standard": "^36.0.0"
+  }
+}
