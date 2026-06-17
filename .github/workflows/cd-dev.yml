@@ -8,20 +8,17 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    # Step 2: Declare the appropriate GitHub Environment
     environment: development
 
     steps:
-      # Step 1: Checkout repository code
       - name: Checkout Code
         uses: actions/checkout@v4
 
-      # Step 3: Send an HTTP POST request to the Render deploy hook URL
-      - name: Trigger Render Deploy
+      - name: Trigger Render Deploy Hook
+        # Sends a POST request to Render to trigger deployment
         run: |
-          curl -f -X POST "${{ secrets.RENDER_DEPLOY_HOOK_DEV_URL }}"
+          curl -X POST ${{ secrets.RENDER_DEPLOY_HOOK_DEV_URL }}
 
-      # Step 4: Output confirmation
-      - name: Confirm Deployment
+      - name: Deployment Confirmation
         run: |
-          echo "Deployment to development environment triggered at $(date)"
+          echo "Deployment to development triggered at $(date)"
