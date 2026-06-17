@@ -1,5 +1,9 @@
+# -------------------------------------------------------------
+# CD Workflow - Staging Environment (Member 4 - Karachi)
+# -------------------------------------------------------------
 name: CD - Staging
 
+# This workflow is triggered automatically only when code is pushed to the 'staging' branch.
 on:
   push:
     branches:
@@ -8,15 +12,21 @@ on:
 jobs:
   deploy:
     name: Deploy to Staging
+    # The CD workflow must declare runs-on: ubuntu-latest as per project requirements
     runs-on: ubuntu-latest
+    
+    # Declaring the environment injects the environment-level secrets into the job
     environment: staging
 
     steps:
+      # Step 1: Check out the repository code using the official action
       - name: Checkout Repository
         uses: actions/checkout@v4
 
+      # Step 2: Deploy to Render by sending an HTTP POST request to the deploy hook URL
       - name: Trigger Render Deployment
         run: curl -X POST ${{ secrets.RENDER_DEPLOY_HOOK_STAGING_URL }}
 
+      # Step 3: Confirm deployment by outputting a timestamped message
       - name: Confirm Deployment
         run: echo "Deployment to staging triggered at $(date)"
