@@ -1,0 +1,27 @@
+name: CD - Staging
+
+on:
+  push:
+    branches:
+      - staging
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    # Step 2: Declare the appropriate GitHub Environment
+    environment: staging
+
+    steps:
+      # Step 1: Checkout repository code
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      # Step 3: Send an HTTP POST request to the Render deploy hook URL
+      - name: Trigger Render Deploy
+        run: |
+          curl -f -X POST "${{ secrets.RENDER_DEPLOY_HOOK_STAGING_URL }}"
+
+      # Step 4: Output confirmation
+      - name: Confirm Deployment
+        run: |
+          echo "Deployment to staging environment triggered at $(date)"

@@ -1,0 +1,73 @@
+# CI workflow for Staging environment
+# Authored/Configured by Rana Mohsin Ali (Member 3)
+name: CI - Staging
+
+on:
+  pull_request:
+    branches:
+      - staging
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Step 1: Checkout repository code
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      # Step 2: Set up Node.js for Linting and Building
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install Dependencies
+        run: npm ci
+
+      # Step 2 (Cont.): Lint HTML with HTMLHint
+      - name: Lint HTML
+        run: npm run lint:html
+
+      # Step 2 (Cont.): Lint CSS with Stylelint
+      - name: Lint CSS
+        run: npm run lint:css
+
+      # Step 2 (Cont.): Build and validate static website with Parcel
+      - name: Build with Parcel
+        run: npm run build
+
+      # Set up QEMU and Buildx (recommended best practices for docker/build-push-action)
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      # Step 3: Authenticate with Docker Hub
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      # Step 4: Build Docker image locally (push: false)
+      - name: Build Docker Image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          push: false
+          tags: |
+            ${{ secrets.DOCKERHUB_USERNAME }}/pakvista:staging-latest
+            ${{ secrets.DOCKERHUB_USERNAME }}/pakvista:staging-${{ github.sha }}
+
+      # Step 5 & 6: Tag and Push Docker Image to Docker Hub (push: true)
+      - name: Push Docker Image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          push: true
+          tags: |
+            ${{ secrets.DOCKERHUB_USERNAME }}/pakvista:staging-latest
+            ${{ secrets.DOCKERHUB_USERNAME }}/pakvista:staging-${{ github.sha }}
