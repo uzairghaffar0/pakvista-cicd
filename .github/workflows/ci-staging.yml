@@ -1,3 +1,5 @@
+# CI workflow for Staging environment
+# Authored/Configured by Rana Mohsin Ali (Member 3)
 name: CI - Staging
 
 on:
